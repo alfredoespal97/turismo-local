@@ -69,7 +69,7 @@ class _OfflineMapsScreenState extends State<OfflineMapsScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Descarga de Paquetes HERE SDK',
+                          'Descarga de Paquetes de Mapas Offline',
                           style: TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.bold,
@@ -212,7 +212,7 @@ class _OfflineMapsScreenState extends State<OfflineMapsScreen> {
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
-                                  'Descargando datos vectoriales de HERE: ${(region.downloadProgress * 100).toInt()}%',
+                                  'Descargando tiles de OpenStreetMap: ${(region.downloadProgress * 100).toInt()}%',
                                   style: const TextStyle(
                                     fontSize: 11,
                                     color: AppTheme.accentCyan,

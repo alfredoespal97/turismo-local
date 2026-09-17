@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import '../../domain/models/here_credentials_model.dart';
 import '../../domain/models/poi_model.dart';
 import '../../domain/repositories/poi_repository.dart';
@@ -7,7 +9,7 @@ import '../../core/services/location_service.dart';
 
 class AppProvider extends ChangeNotifier {
   final IPOIRepository _poiRepository;
-  
+
   AppProvider(this._poiRepository);
 
   List<PlaceOfInterest> _allPois = [];
@@ -17,13 +19,16 @@ class AppProvider extends ChangeNotifier {
   String _searchQuery = '';
   Locale _currentLocale = const Locale('es');
   bool _isOfflineMode = false;
-  
-  // Simulated User Location (Defaulting near Puerta del Sol, Madrid)
+
+  // Real user GPS location (defaults to Puerta del Sol until GPS fix)
   double _userLat = 40.4168;
   double _userLng = -3.7038;
-  PlaceOfInterest? _nearbyAlertPoi;
+  bool _locationPermissionDenied = false;
+  bool _hasRealLocation = false;
 
+  PlaceOfInterest? _nearbyAlertPoi;
   HereCredentials _credentials = const HereCredentials();
+  StreamSubscription<Position>? _locationSubscription;
 
   // Getters
   List<PlaceOfInterest> get pois => _filteredPois;
@@ -35,6 +40,8 @@ class AppProvider extends ChangeNotifier {
   bool get isOfflineMode => _isOfflineMode;
   double get userLat => _userLat;
   double get userLng => _userLng;
+  bool get locationPermissionDenied => _locationPermissionDenied;
+  bool get hasRealLocation => _hasRealLocation;
   PlaceOfInterest? get nearbyAlertPoi => _nearbyAlertPoi;
   HereCredentials get credentials => _credentials;
 
@@ -43,6 +50,55 @@ class AppProvider extends ChangeNotifier {
     _applyFilters();
     _checkProximity();
     notifyListeners();
+  }
+
+  /// Requests location permission and starts real GPS tracking.
+  Future<void> initLocationTracking() async {
+    // Check last known position first for immediate UI jump to real location
+    try {
+      final lastPos = await Geolocator.getLastKnownPosition();
+      if (lastPos != null) {
+        _userLat = lastPos.latitude;
+        _userLng = lastPos.longitude;
+        _hasRealLocation = true;
+        _locationPermissionDenied = false;
+        _checkProximity();
+        notifyListeners();
+      }
+    } catch (_) {}
+
+    final Position? position = await LocationService.requestAndGetCurrentLocation();
+
+    if (position == null) {
+      if (!_hasRealLocation) {
+        _locationPermissionDenied = true;
+      }
+      notifyListeners();
+      return;
+    }
+
+    // Apply first real GPS fix
+    _userLat = position.latitude;
+    _userLng = position.longitude;
+    _hasRealLocation = true;
+    _locationPermissionDenied = false;
+    _checkProximity();
+    notifyListeners();
+
+    // Start continuous stream
+    _locationSubscription?.cancel();
+    _locationSubscription = LocationService.getLocationStream().listen(
+      (Position pos) {
+        _userLat = pos.latitude;
+        _userLng = pos.longitude;
+        _hasRealLocation = true;
+        _checkProximity();
+        notifyListeners();
+      },
+      onError: (_) {
+        // Silently ignore stream errors; keep last known position
+      },
+    );
   }
 
   void setCategory(String category) {
@@ -113,7 +169,13 @@ class AppProvider extends ChangeNotifier {
       _userLat,
       _userLng,
       _allPois,
-      radiusMeters: 800.0, // Alert radius for showcase demo
+      radiusMeters: 800.0,
     );
+  }
+
+  @override
+  void dispose() {
+    _locationSubscription?.cancel();
+    super.dispose();
   }
 }

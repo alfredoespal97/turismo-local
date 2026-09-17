@@ -31,7 +31,7 @@ class TurismoLocalApp extends StatelessWidget {
       child: Consumer<AppProvider>(
         builder: (context, appProvider, child) {
           return MaterialApp(
-            title: 'Turismo Local HERE',
+            title: 'Turismo Local',
             debugShowCheckedModeBanner: false,
             theme: AppTheme.darkTheme,
             locale: appProvider.currentLocale,

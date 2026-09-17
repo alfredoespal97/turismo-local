@@ -4,6 +4,13 @@
 <dict>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
+	<!-- Location permissions required by geolocator -->
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Turismo Local necesita tu ubicación para mostrarte los puntos de interés cercanos y guiarte en el mapa.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Turismo Local necesita tu ubicación para alertarte de monumentos y lugares cercanos incluso en segundo plano.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Turismo Local necesita tu ubicación para alertarte de monumentos y lugares cercanos incluso en segundo plano.</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>

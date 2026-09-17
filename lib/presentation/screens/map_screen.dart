@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/app_provider.dart';
@@ -34,7 +35,9 @@ class _MapScreenState extends State<MapScreen> {
     super.initState();
     Future.microtask(() {
       if (!mounted) return;
-      context.read<AppProvider>().loadPOIs();
+      final provider = context.read<AppProvider>();
+      provider.loadPOIs();
+      provider.initLocationTracking(); // Request GPS permission + start stream
     });
   }
 
@@ -58,9 +61,27 @@ class _MapScreenState extends State<MapScreen> {
             onSelectPoi: (poi) {
               appProvider.selectPOI(poi);
             },
+            onDeselectPoi: () {
+              appProvider.selectPOI(null);
+            },
+            onOpenPoiDetail: () {
+              if (appProvider.selectedPoi != null) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) =>
+                        POIDetailScreen(poi: appProvider.selectedPoi!),
+                  ),
+                );
+              }
+            },
+            onRequestLocation: () {
+              appProvider.initLocationTracking();
+            },
             isOfflineMode: appProvider.isOfflineMode,
             userLat: appProvider.userLat,
             userLng: appProvider.userLng,
+            hasRealLocation: appProvider.hasRealLocation,
           ),
 
           // 2. Top Header Overlay (Search Bar & Offline Toggle & Navigation Actions)
@@ -185,7 +206,46 @@ class _MapScreenState extends State<MapScreen> {
             ),
           ),
 
-          // 3. Bottom Carousel of Points of Interest
+          // 3. Location Permission Denied Banner
+          if (appProvider.locationPermissionDenied)
+            Positioned(
+              left: 16,
+              right: 16,
+              bottom: 160,
+              child: GestureDetector(
+                onTap: () => Geolocator.openAppSettings(),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF7C3AED).withValues(alpha: 0.92),
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(color: Colors.white24),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.3),
+                        blurRadius: 12,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: const Row(
+                    children: [
+                      Icon(Icons.location_off_rounded, color: Colors.white, size: 20),
+                      SizedBox(width: 10),
+                      Expanded(
+                        child: Text(
+                          'Ubicación desactivada. Toca aquí para activarla en Ajustes.',
+                          style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w500),
+                        ),
+                      ),
+                      Icon(Icons.chevron_right_rounded, color: Colors.white70, size: 18),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+
+          // 4. Bottom Carousel of Points of Interest
           Positioned(
             left: 0,
             right: 0,

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../domain/models/poi_model.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/services/here_sdk_service.dart';
+import '../../core/services/navigation_service.dart';
 
 class POIDetailScreen extends StatelessWidget {
   final PlaceOfInterest poi;
@@ -173,7 +174,7 @@ class POIDetailScreen extends StatelessWidget {
 
                   // Location details & Coordinates
                   const Text(
-                    'Ubicación & Coordenadas HERE',
+                    'Ubicación & Coordenadas GPS',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -238,21 +239,29 @@ class POIDetailScreen extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                       ),
                       label: const Text(
-                        'Iniciar Navegación Giro a Giro (HERE SDK)',
+                        'Iniciar Navegación GPS',
                         style: TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              'Calculando ruta óptima con HERE Routing Engine hasta ${poi.name}...',
-                            ),
-                            backgroundColor: AppTheme.cardDark,
-                          ),
+                      onPressed: () async {
+                        final success = await NavigationService.openNavigation(
+                          latitude: poi.latitude,
+                          longitude: poi.longitude,
+                          label: poi.name,
                         );
+                        if (!context.mounted) return;
+                        if (!success) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                'No se pudo abrir la navegación a ${poi.name}',
+                              ),
+                              backgroundColor: Colors.redAccent,
+                            ),
+                          );
+                        }
                       },
                     ),
                   ),

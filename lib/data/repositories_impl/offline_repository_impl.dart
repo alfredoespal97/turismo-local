@@ -26,6 +26,27 @@ class OfflineRepositoryImpl implements IOfflineRepository {
       sizeMb: 180.2,
       poiCount: 1,
     ),
+    'region_zaragoza': const OfflineRegion(
+      id: 'region_zaragoza',
+      name: 'Zaragoza Basílica del Pilar & Ebro',
+      country: 'España',
+      sizeMb: 165.4,
+      poiCount: 2,
+    ),
+    'region_sevilla': const OfflineRegion(
+      id: 'region_sevilla',
+      name: 'Sevilla Giralda & Santa Cruz',
+      country: 'España',
+      sizeMb: 195.8,
+      poiCount: 2,
+    ),
+    'region_valencia': const OfflineRegion(
+      id: 'region_valencia',
+      name: 'Valencia Ciudad de las Artes & Turia',
+      country: 'España',
+      sizeMb: 178.0,
+      poiCount: 2,
+    ),
   };
 
   @override

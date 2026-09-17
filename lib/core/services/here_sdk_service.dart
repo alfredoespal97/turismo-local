@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../domain/models/here_credentials_model.dart';
 
 /// Abstraction Service for HERE SDK (Explore/Navigate edition).
@@ -23,11 +24,15 @@ class HereSdkService {
     _credentials = credentials;
     if (credentials.isValid) {
       _isInitialized = true;
-      debugPrint('[HERE SDK] Engine successfully initialized with App ID: ${credentials.appId}');
+      debugPrint(
+        '[HERE SDK] Engine successfully initialized with App ID: ${credentials.appId}',
+      );
       return true;
     } else {
       _isInitialized = false;
-      debugPrint('[HERE SDK] Operating in Explore Preview / Fallback Engine mode.');
+      debugPrint(
+        '[HERE SDK] Operating in Explore Preview / Fallback Engine mode.',
+      );
       return false;
     }
   }
@@ -41,7 +46,10 @@ class HereSdkService {
   ) {
     return [
       {'lat': startLat, 'lng': startLng},
-      {'lat': (startLat + endLat) / 2 + 0.002, 'lng': (startLng + endLng) / 2 - 0.001},
+      {
+        'lat': (startLat + endLat) / 2 + 0.002,
+        'lng': (startLng + endLng) / 2 - 0.001,
+      },
       {'lat': endLat, 'lng': endLng},
     ];
   }

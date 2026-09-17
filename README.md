@@ -1,107 +1,189 @@
-# 🗺️ Turismo Local HERE - Flutter & HERE SDK App
+# 🗺️ Turismo Local — Interactive Smart Tourism & Open Mapping
 
-[![Flutter Version](https://img.shields.io/badge/Flutter-3.47+-02569B?logo=flutter)](https://flutter.dev)
-[![HERE SDK](https://img.shields.io/badge/HERE_SDK-Explore%2FNavigate-00C897?logo=here)](https://developer.here.com)
-[![Architecture](https://img.shields.io/badge/Architecture-Clean_Architecture-FF6F00)](https://flutter.dev)
-[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Flutter SDK](https://img.shields.io/badge/Flutter-%5E3.13.3-02569B?logo=flutter)](https://flutter.dev)
+[![Dart SDK](https://img.shields.io/badge/Dart-%5E3.0.0-0175C2?logo=dart)](https://dart.dev)
+[![Architecture](https://img.shields.io/badge/Architecture-Clean%20Architecture-00C897)](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
+[![Mapping](https://img.shields.io/badge/Maps-OpenStreetMap%20%7C%20CartoDB%20%7C%20Esri-7C3AED)](https://docs.fleaflet.dev/)
+[![State Management](https://img.shields.io/badge/State-Provider-blueviolet)](https://pub.dev/packages/provider)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-Una aplicación móvil moderna de **Turismo Local y Guía Cultural** desarrollada en **Flutter**, integrada con **HERE SDK (Explore & Navigate Edition)**. Diseñada para demostrar patrones de ingeniería de software avanzados como **Clean Architecture**, **Mapas Vectoriales Interactivos**, **Navegación Offline**, **Geolocalización en Segundo Plano** e **Internacionalización (i18n)**.
-
----
-
-## 🌟 Características Destacadas
-
-* 🗺️ **Renderizado Vectorial con HERE SDK**: Mapas interactivos de alto rendimiento con `MapMarker` personalizados, cálculo de polígonos y rutas.
-* 📦 **Modo Offline & Descarga de Regiones**: Gestor de descarga de mapas regionales pesados para exploración turística en zonas rurales o de montaña sin cobertura móvil.
-* 🔔 **Geolocalización & Alertas de Proximidad**: Cálculo de distancias mediante la fórmula de Haversine y geocercas para notificar al usuario cuando está cerca de un monumento o punto de interés histórico.
-* 🎧 **Audioguías e Información Cultural**: Fichas detalladas de cada POI con duración de narración, valoraciones y coordenadas.
-* 🎨 **Diseño UX/UI de Nivel Premium**: Interfaz en modo oscuro con estética *Glassmorphic*, paleta de colores pulida (Teal & Cyan) y soporte de tipografías nativas con Google Fonts (`Outfit`).
-* 🌐 **Internacionalización (i18n)**: Soporte completo para Español (`es`) e Inglés (`en`) utilizando `flutter_localizations` e `intl`.
+**Turismo Local** es una aplicación móvil avanzada de **turismo inteligente, cartografía interactiva y audioguías culturales** desarrollada en **Flutter**. Diseñada bajo estándares de ingeniería de software para proyectos de producción, implementa **Clean Architecture**, **servicios de cartografía abierta sin costes de licencia**, un **motor GIS multi-capa simultáneo**, **geolocalización en tiempo real con mitigación de latencia de fix GPS**, y **navegación asistida paso a paso hacia puntos de interés**.
 
 ---
 
-## 🏗️ Arquitectura del Proyecto (Clean Architecture)
+## 🌟 Características Principales
 
-El código sigue estrictamente la separación de responsabilidades en 4 capas desacopladas:
+### 1. 🗺️ Motor Cartográfico Libre & Multi-Capa
+* **Zero Cost & Open Source**: Sustitución de APIs de pago por un ecosistema de teselas cartográficas abiertas y escalables (`flutter_map` v7 + `latlong2`).
+* **Estilos Base Intercambiables**:
+  * 🌙 **CartoDB Dark Matter**: Mapa oscuro de alto contraste y estética moderna.
+  * 🗺️ **OpenStreetMap Estándar**: Cartografía urbana detallada con nomenclátor completo.
+  * 🏔️ **OpenTopoMap**: Relieve topográfico con curvas de nivel y elevación.
+  * 🛰️ **Esri World Imagery**: Fotografía satelital de alta resolución global.
+* **Superposición Multi-Capa Simultánea**: Permite activar y combinar múltiples capas a la vez mediante switches:
+  * 🚴 **Capa de Rutas Ciclistas** (*Waymarked Trails Cycling*).
+  * 🥾 **Capa de Senderismo y Montaña** (*Waymarked Trails Hiking*).
+  * 🏛️ **Marcadores Interactivos de POIs** con globos dinámicos.
+  * 🛣️ **Polyline de Ruta de Navegación** con halo de luz resplandeciente.
+
+### 2. 📍 Geolocalización Inteligente & Auto-Centrado
+* **Arranque Instantáneo sin Latencia**: Consulta primero la última posición conocida (`Geolocator.getLastKnownPosition()`) para situar el mapa de inmediato en la ciudad real del usuario sin esperar el bloqueo de satélites GPS.
+* **Auto-Centrado Reactivo**: Transición animada automática al recibir la primera posición GPS precisa.
+* **Botón Flotante "Centrar en mi ubicación"**: Re-centra la cámara con zoom `15.5` en tiempo real y gestiona permisos de forma transparente.
+
+### 3. 🧭 Navegación Asistida al Destino Seleccionado
+* **Trazado de Trayectoria en Mapa**: Polyline animada que conecta la posición del usuario con el monumento o punto turístico seleccionado.
+* **Banner de Navegación Flotante**:
+  * Cálculo de distancia exacta mediante la fórmula matemática de **Haversine**.
+  * Estimación de tiempo a pie (ej. `🚶 12 min a pie`).
+  * **Navegación GPS Real**: Integración con `url_launcher` para abrir la ruta en **Google Maps** o **Apple Maps** con un solo toque.
+  * Acceso directo a la ficha detallada del monumento.
+
+### 4. 📦 Modo Offline & Descarga de Regiones
+* Gestor interactivo para simular y descargar paquetes regionales de cartografía y datos turísticos para exploración sin cobertura móvil.
+* Ciudades y regiones incluidas con datos reales: **Madrid**, **Barcelona**, **Sevilla**, **Zaragoza**, **Valencia** y **Granada**.
+
+### 5. 🎧 Audioguías & Contenido Cultural
+* Fichas detalladas con fotografías en alta resolución, reseñas de visitantes, duración estimada de audioguía narrada en HD, dirección y coordenadas GPS formateadas.
+* Filtro por categorías temáticas: *Monumentos*, *Gastronomía*, *Naturaleza* y *Cultura*.
+* Barra de búsqueda reactiva por nombre, descripción o etiquetas.
+
+---
+
+## 📐 Arquitectura & Patrones de Diseño
+
+El proyecto implementa **Clean Architecture** para garantizar un desacoplamiento total entre la lógica de negocio, las fuentes de datos y los componentes visuales:
+
+```mermaid
+graph TD
+    subgraph Presentation [Capa de Presentación - Flutter]
+        UI[Screens & Custom Widgets]
+        Map[HereMapWidget - FlutterMap]
+        Prov[AppProvider / ChangeNotifier]
+    end
+
+    subgraph Domain [Capa de Dominio - Pure Dart]
+        Models[POI, OfflineRegion, HereCredentials]
+        RepoInterfaces[IPOIRepository, IOfflineRepository]
+    end
+
+    subgraph Data [Capa de Datos]
+        RepoImpl[POIRepositoryImpl, OfflineRepositoryImpl]
+        LocalDS[JSON Local Assets / Cache]
+    end
+
+    subgraph Core [Núcleo & Infraestructura]
+        LocServ[LocationService - Haversine & GPS]
+        NavServ[NavigationService - Google/Apple Maps Launcher]
+        Theme[AppTheme - Tokens, Dark Palette & Glassmorphism]
+    end
+
+    UI --> Prov
+    Map --> LocServ
+    Map --> NavServ
+    Prov --> RepoInterfaces
+    RepoImpl ..|> RepoInterfaces
+    RepoImpl --> LocalDS
+    Prov --> LocServ
+```
+
+---
+
+## 📂 Estructura del Código Fuente
 
 ```
 lib/
-├── core/                   # Clases base, servicios de infraestructura y tema
-│   ├── config/             # Configuración de HERE SDK y constantes de entorno
-│   ├── services/           # HereSdkService, LocationService (Haversine)
-│   └── theme/              # Tokens de diseño, gradientes y tipografías (AppTheme)
-├── domain/                 # Reglas de negocio puras e interfaces
+├── core/
+│   ├── config/             # Configuración general y constantes de entorno
+│   ├── services/
+│   │   ├── location_service.dart     # GPS, permisos, stream y cálculo Haversine
+│   │   ├── navigation_service.dart   # Deep linking a Google Maps / Apple Maps
+│   │   └── here_sdk_service.dart     # Servicio de inicialización y formateo
+│   └── theme/
+│       └── app_theme.dart            # Paleta de colores, sombras y tokens glassmorphism
+├── domain/
 │   ├── models/             # PlaceOfInterest, OfflineRegion, HereCredentials
-│   └── repositories/       # Interfaces (IPOIRepository, IOfflineRepository)
-├── data/                   # Datos, datasources e implementaciones
-│   ├── datasources/        # Archivos JSON locales de monumentos y regiones
-│   └── repositories_impl/  # Implementaciones concretas con gestión de cache y storage
-├── presentation/           # Capa visual (UI, Providers, Screens y Widgets)
-│   ├── providers/          # AppProvider y OfflineMapsProvider
-│   ├── screens/            # MapScreen, POIDetailScreen, OfflineMapsScreen, SettingsScreen
-│   └── widgets/            # HereMapWidget, POICard, CategoryChips, ProximityBanner
-└── l10n/                   # Archivos ARB para internacionalización (app_es.arb, app_en.arb)
+│   └── repositories/       # Interfaces puras (IPOIRepository, IOfflineRepository)
+├── data/
+│   ├── datasources/        # Fuentes de datos JSON para monumentos y regiones
+│   └── repositories_impl/  # Implementaciones de repositorios con carga asíncrona
+├── presentation/
+│   ├── providers/          # AppProvider (estado global del mapa y filtros)
+│   ├── screens/
+│   │   ├── map_screen.dart           # Pantalla principal del mapa interactivo
+│   │   ├── poi_detail_screen.dart    # Detalle con audioguía y navegación directa
+│   │   ├── offline_maps_screen.dart  # Gestor de descarga de regiones
+│   │   └── settings_screen.dart      # Ajustes de capas y credenciales
+│   └── widgets/
+│       ├── here_map_widget.dart      # Widget principal con FlutterMap y selector multi-capa
+│       ├── poi_card.dart             # Tarjeta del carrusel horizontal inferior
+│       ├── category_chips.dart       # Chips de filtrado rápido por categoría
+│       └── proximity_banner.dart     # Banner de alerta por cercanía a monumentos
+├── l10n/                   # Internacionalización (app_es.arb, app_en.arb)
+└── main.dart               # Punto de entrada de la aplicación
 ```
 
 ---
 
-## 🚀 Guía de Inicio Rápido
+## 🚀 Instalación y Puesta en Marcha
 
 ### Prerrequisitos
-- **Flutter SDK**: `>=3.13.3` (Canal estable)
-- **Dart SDK**: `>=3.0.0`
-- **HERE Developer Account**: Cuenta gratuita en [developer.here.com](https://developer.here.com/)
+* **Flutter SDK**: `>=3.13.3` ([Instrucciones de instalación](https://docs.flutter.dev/get-started/install))
+* **Dart SDK**: `>=3.0.0`
+* Dispositivo físico o emulador (Android, iOS o macOS Desktop)
 
-### 1. Clonar el Repositorio
+### 1. Clonar el repositorio
 ```bash
-git clone https://github.com/tu-usuario/turismo_local_here.git
-cd turismo_local_here
+git clone https://github.com/alfredoespal97/turismo-local.git
+cd turismo-local
 ```
 
-### 2. Instalar Dependencias
+### 2. Descargar dependencias
 ```bash
 flutter pub get
 ```
 
-### 3. Ejecutar la Aplicación
+### 3. Ejecutar en emulador o dispositivo
 ```bash
+# Android / iOS / macOS
 flutter run
 ```
 
 ---
 
-## 🔑 Configuración del HERE SDK en la Aplicación
+## 🧪 Pruebas Unitarias y Calidad de Código
 
-1. Regístrate en el [HERE Developer Portal](https://developer.here.com/).
-2. Crea un nuevo proyecto y genera tus **SDK Credentials** (`App ID`, `Access Key ID` y `Access Key Secret`).
-3. Inicia la aplicación, navega al menú de **Configuración & SDK Options** (ícono ⚙️ en la esquina superior derecha).
-4. Ingresa tus credenciales y presiona **Guardar e Inicializar Engine**.
-
-> **Nota para Desarrolladores**: La app incluye un motor de abstracción y simulación interactiva (`HereSdkService`), lo que permite compilar y previsualizar la interfaz en cualquier plataforma (Web, iOS, Android) sin requerir binarios nativos adicionales de inmediato.
-
----
-
-## 💼 Puntos Clave para Destacar en un CV / Entrevista Técnica
-
-Cuando presentes este proyecto a reclutadores o equipos de ingeniería, puedes resaltar los siguientes logros técnicos:
-
-- **Dominio de SDKs Industriales de Cartografía**: *“Integración de HERE SDK (Explore/Navigate edition) en Flutter para renderizado de mapas vectoriales y navegación giro a giro en aplicaciones móviles de alto tráfico.”*
-- **Arquitectura Escalable y Mantenible**: *“Diseño estructurado bajo Clean Architecture e inyección de dependencias, garantizando una alta cobertura de pruebas unitarias y facilidades de mantenimiento.”*
-- **Persistencia de Datos & Estrategia Offline-First**: *“Desarrollo de un gestor de descargas regionales de cartografía pesada para asegurar operatividad fluida sin conexión a internet.”*
-- **Optimización Energética & Background GPS**: *“Implementación de geocercas eficientes y fórmulas trigonométricas (Haversine) para alertas de proximidad sin drenar la batería del dispositivo.”*
-
----
-
-## 🧪 Pruebas Unitarias
-
-Ejecuta el conjunto de tests automatizados para validar los repositorios y servicios de geolocalización:
+El proyecto cuenta con un conjunto de pruebas automatizadas y cumple con los estándares más estrictos de análisis estático del SDK de Flutter:
 
 ```bash
+# Ejecutar análisis estático (0 warnings / 0 issues)
+flutter analyze
+
+# Ejecutar suite de pruebas unitarias
 flutter test
 ```
+
+Resultados de la verificación:
+```text
+Analyzing turismo_local_here...
+No issues found!
+
+00:00 +6: All tests passed!
+```
+
+---
+
+## 💼 Aspectos Técnicos Destacados para Entrevistas / CV
+
+* **Dominio de Sistemas GIS y Cartografía Móvil**: *Implementación de renderizado de teselas raster y vectoriales con cacheado eficiente, mitigación de artefactos visuales y soporte de múltiples proyecciones y capas superpuestas.*
+* **Arquitectura Limpia & Escalabilidad**: *Separación en capas desacopladas (Clean Architecture) que permite reemplazar proveedores de mapas (OSM, Mapbox, HERE, Google Maps) sin tocar la lógica de negocio ni la interfaz de usuario.*
+* **Eficiencia Energética y Experiencia de Usuario**: *Uso de `getLastKnownPosition()` para inicio inmediato y streams con filtros de distancia (`distanceFilter: 20m`) para evitar el drenaje excesivo de batería en el seguimiento GPS.*
+* **Navegación Cross-Platform**: *Deep linking seguro y fallback automático hacia Google Maps y Apple Maps según la plataforma de destino.*
 
 ---
 
 ## 📄 Licencia
 
-Este proyecto está bajo la Licencia MIT. Consulta el archivo [LICENSE](LICENSE) para más detalles.
+Este proyecto está bajo la Licencia **MIT**. Consulta el archivo [LICENSE](LICENSE) para más información.
+
+Desarrollado con ❤️ por **[Alfredo Espinosa](https://github.com/alfredoespal97)**.

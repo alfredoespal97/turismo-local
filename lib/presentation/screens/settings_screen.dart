@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../domain/models/here_credentials_model.dart';
 import '../providers/app_provider.dart';
 import '../../core/theme/app_theme.dart';
 
@@ -12,26 +11,6 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  late TextEditingController _appIdController;
-  late TextEditingController _accessKeyIdController;
-  late TextEditingController _accessKeySecretController;
-
-  @override
-  void initState() {
-    super.initState();
-    final creds = context.read<AppProvider>().credentials;
-    _appIdController = TextEditingController(text: creds.appId);
-    _accessKeyIdController = TextEditingController(text: creds.accessKeyId);
-    _accessKeySecretController = TextEditingController(text: creds.accessKeySecret);
-  }
-
-  @override
-  void dispose() {
-    _appIdController.dispose();
-    _accessKeyIdController.dispose();
-    _accessKeySecretController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +19,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Configuración & SDK Options',
+          'Configuración',
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
         ),
         backgroundColor: AppTheme.darkBackground,
@@ -92,63 +71,49 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
           const SizedBox(height: 20),
 
-          // HERE SDK Credentials Card
+          // OpenStreetMap Info Card
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: AppTheme.cardDark,
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: AppTheme.cardGlassBorder),
+              border: Border.all(color: AppTheme.primaryTeal.withValues(alpha: 0.4)),
             ),
-            child: Column(
+            child: const Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Row(
-                  children: [
-                    Icon(Icons.key_rounded, color: AppTheme.accentCyan),
-                    SizedBox(width: 10),
-                    Text(
-                      'Credenciales HERE Developer Portal',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                const Text(
-                  'Ingresa las claves obtenidas en developer.here.com (Plan Freemium / Base)',
-                  style: TextStyle(fontSize: 12, color: AppTheme.textSecondary),
-                ),
-                const SizedBox(height: 16),
-                _buildTextField(_appIdController, 'App ID (e.g. wX9Yk...)', Icons.developer_mode),
-                const SizedBox(height: 12),
-                _buildTextField(_accessKeyIdController, 'Access Key ID', Icons.fingerprint),
-                const SizedBox(height: 12),
-                _buildTextField(_accessKeySecretController, 'Access Key Secret', Icons.lock_outline, isSecret: true),
-                const SizedBox(height: 16),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton.icon(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppTheme.accentCyan,
-                      foregroundColor: Colors.black,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                    ),
-                    icon: const Icon(Icons.check_circle_rounded),
-                    label: const Text('Guardar e Inicializar Engine', style: TextStyle(fontWeight: FontWeight.bold)),
-                    onPressed: () {
-                      final newCreds = HereCredentials(
-                        appId: _appIdController.text.trim(),
-                        accessKeyId: _accessKeyIdController.text.trim(),
-                        accessKeySecret: _accessKeySecretController.text.trim(),
-                      );
-                      appProvider.updateCredentials(newCreds);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Credenciales de HERE SDK actualizadas correctamente.'),
-                          backgroundColor: AppTheme.primaryTeal,
+                Icon(Icons.map_rounded, color: AppTheme.primaryTeal, size: 28),
+                SizedBox(width: 14),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Mapas: OpenStreetMap',
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
                         ),
-                      );
-                    },
+                      ),
+                      SizedBox(height: 6),
+                      Text(
+                        'Esta app usa OpenStreetMap (flutter_map) — cartografía libre, gratuita y sin API key. Los tiles se descargan en tiempo real cuando hay conexión.',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: AppTheme.textSecondary,
+                          height: 1.5,
+                        ),
+                      ),
+                      SizedBox(height: 8),
+                      Text(
+                        '© OpenStreetMap contributors · Licencia ODbL',
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: AppTheme.accentCyan,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
@@ -159,30 +124,5 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  Widget _buildTextField(TextEditingController controller, String label, IconData icon, {bool isSecret = false}) {
-    return TextField(
-      controller: controller,
-      obscureText: isSecret,
-      style: const TextStyle(color: Colors.white, fontSize: 14),
-      decoration: InputDecoration(
-        labelText: label,
-        labelStyle: const TextStyle(color: AppTheme.textSecondary, fontSize: 13),
-        prefixIcon: Icon(icon, color: AppTheme.primaryTeal, size: 18),
-        filled: true,
-        fillColor: Colors.black26,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppTheme.cardGlassBorder),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppTheme.cardGlassBorder),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppTheme.primaryTeal),
-        ),
-      ),
-    );
-  }
 }
+

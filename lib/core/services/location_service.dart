@@ -1,8 +1,56 @@
 import 'dart:math';
+import 'package:geolocator/geolocator.dart';
 import '../../domain/models/poi_model.dart';
 
 class LocationService {
-  /// Calculates distance in meters between two geographical points using Haversine formula
+  /// Requests location permissions and returns the current GPS position.
+  /// Returns null if permissions are denied or GPS is unavailable.
+  static Future<Position?> requestAndGetCurrentLocation() async {
+    // 1. Check if location services are enabled on device
+    final bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      // Location services are disabled — nothing we can do from here
+      return null;
+    }
+
+    // 2. Check / request permission
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return null; // User denied permission
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      // Permissions permanently denied — user must go to Settings
+      return null;
+    }
+
+    // 3. Get current GPS position
+    try {
+      return await Geolocator.getCurrentPosition(
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.high,
+          timeLimit: Duration(seconds: 10),
+        ),
+      );
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Starts a continuous stream of location updates.
+  static Stream<Position> getLocationStream() {
+    return Geolocator.getPositionStream(
+      locationSettings: const LocationSettings(
+        accuracy: LocationAccuracy.high,
+        distanceFilter: 20, // Update every 20 metres
+      ),
+    );
+  }
+
+  /// Calculates distance in meters between two geographical points using Haversine formula.
   static double calculateDistanceMeters(
     double lat1,
     double lon1,
@@ -27,7 +75,7 @@ class LocationService {
     return degree * pi / 180.0;
   }
 
-  /// Checks if user location triggers a proximity alert for any POI within radiusMeters (e.g. 500m)
+  /// Checks if user location triggers a proximity alert for any POI within radiusMeters.
   static PlaceOfInterest? checkNearbyPOI(
     double userLat,
     double userLng,
