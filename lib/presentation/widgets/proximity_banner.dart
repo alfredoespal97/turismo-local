@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../domain/models/poi_model.dart';
 import '../../core/theme/app_theme.dart';
 
@@ -22,17 +23,17 @@ class ProximityBanner extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            AppTheme.primaryTeal.withOpacity(0.9),
-            const Color(0xFF0F766E).withOpacity(0.95),
+            AppTheme.primaryTeal.withValues(alpha: 0.9),
+            const Color(0xFF0F766E).withValues(alpha: 0.95),
           ],
         ),
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: AppTheme.primaryTeal.withOpacity(0.4),
+            color: AppTheme.primaryTeal.withValues(alpha: 0.4),
             blurRadius: 16,
             offset: const Offset(0, 6),
-          )
+          ),
         ],
       ),
       child: Row(
@@ -43,7 +44,11 @@ class ProximityBanner extends StatelessWidget {
               color: Colors.black26,
               shape: BoxShape.circle,
             ),
-            child: const Icon(Icons.near_me_rounded, color: Colors.white, size: 22),
+            child: const Icon(
+              Icons.near_me_rounded,
+              color: Colors.white,
+              size: 22,
+            ),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -77,9 +82,13 @@ class ProximityBanner extends StatelessWidget {
             ),
           ),
           IconButton(
-            icon: const Icon(Icons.close_rounded, color: Colors.white70, size: 18),
+            icon: const Icon(
+              Icons.close_rounded,
+              color: Colors.white70,
+              size: 18,
+            ),
             onPressed: onDismiss,
-          )
+          ),
         ],
       ),
     );

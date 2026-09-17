@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../../domain/models/offline_region_model.dart';
 import '../providers/offline_maps_provider.dart';
 import '../../core/theme/app_theme.dart';
@@ -16,6 +17,7 @@ class _OfflineMapsScreenState extends State<OfflineMapsScreen> {
   void initState() {
     super.initState();
     Future.microtask(() {
+      if (!mounted) return;
       context.read<OfflineMapsProvider>().loadRegions();
     });
   }
@@ -28,7 +30,11 @@ class _OfflineMapsScreenState extends State<OfflineMapsScreen> {
       appBar: AppBar(
         title: const Text(
           'Mapas y Datos Offline',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
         ),
         backgroundColor: AppTheme.darkBackground,
       ),
@@ -44,7 +50,7 @@ class _OfflineMapsScreenState extends State<OfflineMapsScreen> {
                 gradient: LinearGradient(
                   colors: [
                     AppTheme.cardDark,
-                    AppTheme.cardDark.withOpacity(0.8),
+                    AppTheme.cardDark.withValues(alpha: 0.8),
                   ],
                 ),
                 borderRadius: BorderRadius.circular(16),
@@ -52,7 +58,11 @@ class _OfflineMapsScreenState extends State<OfflineMapsScreen> {
               ),
               child: const Row(
                 children: [
-                  Icon(Icons.wifi_off_rounded, color: AppTheme.primaryTeal, size: 32),
+                  Icon(
+                    Icons.wifi_off_rounded,
+                    color: AppTheme.primaryTeal,
+                    size: 32,
+                  ),
                   SizedBox(width: 14),
                   Expanded(
                     child: Column(
@@ -60,12 +70,19 @@ class _OfflineMapsScreenState extends State<OfflineMapsScreen> {
                       children: [
                         Text(
                           'Descarga de Paquetes HERE SDK',
-                          style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white),
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
                         ),
                         SizedBox(height: 4),
                         Text(
                           'Guarda mapas vectoriales y rutas completas para navegar sin cobertura móvil.',
-                          style: TextStyle(fontSize: 12, color: AppTheme.textSecondary),
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: AppTheme.textSecondary,
+                          ),
                         ),
                       ],
                     ),
@@ -77,19 +94,29 @@ class _OfflineMapsScreenState extends State<OfflineMapsScreen> {
 
             const Text(
               'Regiones Disponibles',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
             ),
             const SizedBox(height: 12),
 
             Expanded(
               child: offlineProvider.isLoading
-                  ? const Center(child: CircularProgressIndicator(color: AppTheme.primaryTeal))
+                  ? const Center(
+                      child: CircularProgressIndicator(
+                        color: AppTheme.primaryTeal,
+                      ),
+                    )
                   : ListView.builder(
                       itemCount: offlineProvider.regions.length,
                       itemBuilder: (context, index) {
                         final region = offlineProvider.regions[index];
-                        final isDownloaded = region.status == OfflineDownloadStatus.downloaded;
-                        final isDownloading = region.status == OfflineDownloadStatus.downloading;
+                        final isDownloaded =
+                            region.status == OfflineDownloadStatus.downloaded;
+                        final isDownloading =
+                            region.status == OfflineDownloadStatus.downloading;
 
                         return Container(
                           margin: const EdgeInsets.only(bottom: 12),
@@ -98,7 +125,9 @@ class _OfflineMapsScreenState extends State<OfflineMapsScreen> {
                             color: AppTheme.cardDark,
                             borderRadius: BorderRadius.circular(16),
                             border: Border.all(
-                              color: isDownloaded ? AppTheme.primaryTeal : AppTheme.cardGlassBorder,
+                              color: isDownloaded
+                                  ? AppTheme.primaryTeal
+                                  : AppTheme.cardGlassBorder,
                             ),
                           ),
                           child: Column(
@@ -108,7 +137,8 @@ class _OfflineMapsScreenState extends State<OfflineMapsScreen> {
                                 children: [
                                   Expanded(
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Text(
                                           region.name,
@@ -121,15 +151,22 @@ class _OfflineMapsScreenState extends State<OfflineMapsScreen> {
                                         const SizedBox(height: 4),
                                         Text(
                                           '${region.country} • ${region.sizeMb} MB • ${region.poiCount} POIs',
-                                          style: const TextStyle(fontSize: 12, color: AppTheme.textSecondary),
+                                          style: const TextStyle(
+                                            fontSize: 12,
+                                            color: AppTheme.textSecondary,
+                                          ),
                                         ),
                                       ],
                                     ),
                                   ),
                                   if (isDownloaded)
                                     IconButton(
-                                      icon: const Icon(Icons.delete_outline_rounded, color: Colors.redAccent),
-                                      onPressed: () => offlineProvider.deleteRegion(region.id),
+                                      icon: const Icon(
+                                        Icons.delete_outline_rounded,
+                                        color: Colors.redAccent,
+                                      ),
+                                      onPressed: () => offlineProvider
+                                          .deleteRegion(region.id),
                                     )
                                   else if (isDownloading)
                                     const SizedBox(
@@ -146,12 +183,23 @@ class _OfflineMapsScreenState extends State<OfflineMapsScreen> {
                                         backgroundColor: AppTheme.primaryTeal,
                                         foregroundColor: Colors.black,
                                         shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(12),
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
                                         ),
                                       ),
-                                      icon: const Icon(Icons.download_rounded, size: 16),
-                                      label: const Text('Descargar', style: TextStyle(fontWeight: FontWeight.bold)),
-                                      onPressed: () => offlineProvider.downloadRegion(region.id),
+                                      icon: const Icon(
+                                        Icons.download_rounded,
+                                        size: 16,
+                                      ),
+                                      label: const Text(
+                                        'Descargar',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      onPressed: () => offlineProvider
+                                          .downloadRegion(region.id),
                                     ),
                                 ],
                               ),
@@ -165,7 +213,10 @@ class _OfflineMapsScreenState extends State<OfflineMapsScreen> {
                                 const SizedBox(height: 4),
                                 Text(
                                   'Descargando datos vectoriales de HERE: ${(region.downloadProgress * 100).toInt()}%',
-                                  style: const TextStyle(fontSize: 11, color: AppTheme.accentCyan),
+                                  style: const TextStyle(
+                                    fontSize: 11,
+                                    color: AppTheme.accentCyan,
+                                  ),
                                 ),
                               ],
                             ],

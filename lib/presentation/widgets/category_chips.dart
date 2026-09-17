@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../core/theme/app_theme.dart';
 
 class CategoryChips extends StatelessWidget {
@@ -23,7 +24,8 @@ class CategoryChips extends StatelessWidget {
         itemCount: categories.length,
         itemBuilder: (context, index) {
           final cat = categories[index];
-          final isSelected = selectedCategory.toLowerCase() == cat.toLowerCase();
+          final isSelected =
+              selectedCategory.toLowerCase() == cat.toLowerCase();
 
           return Padding(
             padding: const EdgeInsets.only(right: 8),
@@ -36,12 +38,14 @@ class CategoryChips extends StatelessWidget {
                 color: isSelected ? Colors.black : Colors.white70,
               ),
               selectedColor: AppTheme.primaryTeal,
-              backgroundColor: AppTheme.cardDark.withOpacity(0.85),
+              backgroundColor: AppTheme.cardDark.withValues(alpha: 0.85),
               checkmarkColor: Colors.black,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20),
                 side: BorderSide(
-                  color: isSelected ? AppTheme.primaryTeal : AppTheme.cardGlassBorder,
+                  color: isSelected
+                      ? AppTheme.primaryTeal
+                      : AppTheme.cardGlassBorder,
                 ),
               ),
               onSelected: (_) => onSelectCategory(cat),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../domain/models/poi_model.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/services/here_sdk_service.dart';
@@ -10,7 +11,10 @@ class POIDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final coordsFormatted = HereSdkService().formatCoordinates(poi.latitude, poi.longitude);
+    final coordsFormatted = HereSdkService().formatCoordinates(
+      poi.latitude,
+      poi.longitude,
+    );
 
     return Scaffold(
       body: CustomScrollView(
@@ -38,7 +42,11 @@ class POIDetailScreen extends StatelessWidget {
                     fit: BoxFit.cover,
                     errorBuilder: (ctx, err, stack) => Container(
                       color: AppTheme.cardDark,
-                      child: const Icon(Icons.account_balance_rounded, size: 80, color: Colors.white24),
+                      child: const Icon(
+                        Icons.account_balance_rounded,
+                        size: 80,
+                        color: Colors.white24,
+                      ),
                     ),
                   ),
                   const DecoratedBox(
@@ -46,10 +54,7 @@ class POIDetailScreen extends StatelessWidget {
                       gradient: LinearGradient(
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
-                        colors: [
-                          Colors.transparent,
-                          Colors.black87,
-                        ],
+                        colors: [Colors.transparent, Colors.black87],
                       ),
                     ),
                   ),
@@ -69,7 +74,9 @@ class POIDetailScreen extends StatelessWidget {
                   Row(
                     children: [
                       Chip(
-                        backgroundColor: AppTheme.primaryTeal.withOpacity(0.15),
+                        backgroundColor: AppTheme.primaryTeal.withValues(
+                          alpha: 0.15,
+                        ),
                         side: const BorderSide(color: AppTheme.primaryTeal),
                         label: Text(
                           poi.category.toUpperCase(),
@@ -81,7 +88,11 @@ class POIDetailScreen extends StatelessWidget {
                         ),
                       ),
                       const Spacer(),
-                      const Icon(Icons.star_rounded, color: Colors.amber, size: 20),
+                      const Icon(
+                        Icons.star_rounded,
+                        color: Colors.amber,
+                        size: 20,
+                      ),
                       const SizedBox(width: 4),
                       Text(
                         '${poi.rating} (${poi.reviewCount} opiniones)',
@@ -107,7 +118,10 @@ class POIDetailScreen extends StatelessWidget {
                       children: [
                         const CircleAvatar(
                           backgroundColor: AppTheme.accentCyan,
-                          child: Icon(Icons.play_arrow_rounded, color: Colors.black),
+                          child: Icon(
+                            Icons.play_arrow_rounded,
+                            color: Colors.black,
+                          ),
                         ),
                         const SizedBox(width: 12),
                         Expanded(
@@ -124,7 +138,10 @@ class POIDetailScreen extends StatelessWidget {
                               ),
                               Text(
                                 '${poi.audioGuideMinutes} minutos de narración en HD',
-                                style: const TextStyle(fontSize: 12, color: AppTheme.textSecondary),
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  color: AppTheme.textSecondary,
+                                ),
                               ),
                             ],
                           ),
@@ -137,29 +154,48 @@ class POIDetailScreen extends StatelessWidget {
                   // Description
                   const Text(
                     'Sobre este monumento',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
                   ),
                   const SizedBox(height: 8),
                   Text(
                     poi.description,
-                    style: const TextStyle(fontSize: 14, height: 1.5, color: AppTheme.textSecondary),
+                    style: const TextStyle(
+                      fontSize: 14,
+                      height: 1.5,
+                      color: AppTheme.textSecondary,
+                    ),
                   ),
                   const SizedBox(height: 20),
 
                   // Location details & Coordinates
                   const Text(
                     'Ubicación & Coordenadas HERE',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
                   ),
                   const SizedBox(height: 8),
                   Row(
                     children: [
-                      const Icon(Icons.location_on_outlined, color: AppTheme.primaryTeal, size: 18),
+                      const Icon(
+                        Icons.location_on_outlined,
+                        color: AppTheme.primaryTeal,
+                        size: 18,
+                      ),
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
                           poi.address,
-                          style: const TextStyle(fontSize: 14, color: Colors.white70),
+                          style: const TextStyle(
+                            fontSize: 14,
+                            color: Colors.white70,
+                          ),
                         ),
                       ),
                     ],
@@ -167,11 +203,18 @@ class POIDetailScreen extends StatelessWidget {
                   const SizedBox(height: 4),
                   Row(
                     children: [
-                      const Icon(Icons.explore_outlined, color: AppTheme.accentCyan, size: 18),
+                      const Icon(
+                        Icons.explore_outlined,
+                        color: AppTheme.accentCyan,
+                        size: 18,
+                      ),
                       const SizedBox(width: 8),
                       Text(
                         coordsFormatted,
-                        style: const TextStyle(fontSize: 13, color: AppTheme.textSecondary),
+                        style: const TextStyle(
+                          fontSize: 13,
+                          color: AppTheme.textSecondary,
+                        ),
                       ),
                     ],
                   ),
@@ -185,13 +228,21 @@ class POIDetailScreen extends StatelessWidget {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppTheme.primaryTeal,
                         foregroundColor: Colors.black,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
                         elevation: 4,
                       ),
-                      icon: const Icon(Icons.navigation_rounded, fontWeight: FontWeight.bold),
+                      icon: const Icon(
+                        Icons.navigation_rounded,
+                        fontWeight: FontWeight.bold,
+                      ),
                       label: const Text(
                         'Iniciar Navegación Giro a Giro (HERE SDK)',
-                        style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       onPressed: () {
                         ScaffoldMessenger.of(context).showSnackBar(

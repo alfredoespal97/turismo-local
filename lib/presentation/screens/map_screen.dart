@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../providers/app_provider.dart';
 import '../widgets/here_map_widget.dart';
 import '../widgets/poi_card.dart';
@@ -32,6 +33,7 @@ class _MapScreenState extends State<MapScreen> {
   void initState() {
     super.initState();
     Future.microtask(() {
+      if (!mounted) return;
       context.read<AppProvider>().loadPOIs();
     });
   }
@@ -66,7 +68,10 @@ class _MapScreenState extends State<MapScreen> {
             child: Column(
               children: [
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
                   child: Row(
                     children: [
                       // Search Bar Card
@@ -74,27 +79,38 @@ class _MapScreenState extends State<MapScreen> {
                         child: Container(
                           height: 48,
                           decoration: BoxDecoration(
-                            color: AppTheme.cardDark.withOpacity(0.9),
+                            color: AppTheme.cardDark.withValues(alpha: 0.9),
                             borderRadius: BorderRadius.circular(24),
                             border: Border.all(color: AppTheme.cardGlassBorder),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withOpacity(0.3),
+                                color: Colors.black.withValues(alpha: 0.3),
                                 blurRadius: 10,
                                 offset: const Offset(0, 4),
-                              )
+                              ),
                             ],
                           ),
                           child: TextField(
                             controller: _searchController,
                             onChanged: (val) => appProvider.setSearchQuery(val),
-                            style: const TextStyle(color: Colors.white, fontSize: 14),
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 14,
+                            ),
                             decoration: const InputDecoration(
                               hintText: 'Buscar monumentos, parques...',
-                              hintStyle: TextStyle(color: AppTheme.textSecondary, fontSize: 13),
-                              prefixIcon: Icon(Icons.search_rounded, color: AppTheme.primaryTeal),
+                              hintStyle: TextStyle(
+                                color: AppTheme.textSecondary,
+                                fontSize: 13,
+                              ),
+                              prefixIcon: Icon(
+                                Icons.search_rounded,
+                                color: AppTheme.primaryTeal,
+                              ),
                               border: InputBorder.none,
-                              contentPadding: EdgeInsets.symmetric(vertical: 12),
+                              contentPadding: EdgeInsets.symmetric(
+                                vertical: 12,
+                              ),
                             ),
                           ),
                         ),
@@ -104,14 +120,20 @@ class _MapScreenState extends State<MapScreen> {
                       // Offline Maps Button
                       IconButton.filledTonal(
                         style: IconButton.styleFrom(
-                          backgroundColor: appProvider.isOfflineMode ? AppTheme.primaryTeal : AppTheme.cardDark,
-                          foregroundColor: appProvider.isOfflineMode ? Colors.black : AppTheme.accentCyan,
+                          backgroundColor: appProvider.isOfflineMode
+                              ? AppTheme.primaryTeal
+                              : AppTheme.cardDark,
+                          foregroundColor: appProvider.isOfflineMode
+                              ? Colors.black
+                              : AppTheme.accentCyan,
                         ),
                         icon: const Icon(Icons.download_for_offline_rounded),
                         onPressed: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (_) => const OfflineMapsScreen()),
+                            MaterialPageRoute(
+                              builder: (_) => const OfflineMapsScreen(),
+                            ),
                           );
                         },
                       ),
@@ -126,7 +148,9 @@ class _MapScreenState extends State<MapScreen> {
                         onPressed: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (_) => const SettingsScreen()),
+                            MaterialPageRoute(
+                              builder: (_) => const SettingsScreen(),
+                            ),
                           );
                         },
                       ),
@@ -150,7 +174,9 @@ class _MapScreenState extends State<MapScreen> {
                       appProvider.dismissProximityAlert();
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (_) => POIDetailScreen(poi: poi)),
+                        MaterialPageRoute(
+                          builder: (_) => POIDetailScreen(poi: poi),
+                        ),
                       );
                     },
                     onDismiss: () => appProvider.dismissProximityAlert(),
@@ -169,14 +195,20 @@ class _MapScreenState extends State<MapScreen> {
               child: appProvider.pois.isEmpty
                   ? Center(
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 8,
+                        ),
                         decoration: BoxDecoration(
-                          color: AppTheme.cardDark.withOpacity(0.9),
+                          color: AppTheme.cardDark.withValues(alpha: 0.9),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: const Text(
                           'No se encontraron lugares con esos criterios.',
-                          style: TextStyle(color: AppTheme.textSecondary, fontSize: 13),
+                          style: TextStyle(
+                            color: AppTheme.textSecondary,
+                            fontSize: 13,
+                          ),
                         ),
                       ),
                     )
@@ -186,7 +218,8 @@ class _MapScreenState extends State<MapScreen> {
                       itemCount: appProvider.pois.length,
                       itemBuilder: (context, index) {
                         final poi = appProvider.pois[index];
-                        final isSelected = appProvider.selectedPoi?.id == poi.id;
+                        final isSelected =
+                            appProvider.selectedPoi?.id == poi.id;
 
                         return POICard(
                           poi: poi,

@@ -7,6 +7,7 @@ import 'presentation/providers/app_provider.dart';
 import 'presentation/providers/offline_maps_provider.dart';
 import 'presentation/screens/map_screen.dart';
 import 'core/theme/app_theme.dart';
+import 'l10n/app_localizations.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -39,6 +40,7 @@ class TurismoLocalApp extends StatelessWidget {
               Locale('en', ''),
             ],
             localizationsDelegates: const [
+              AppLocalizations.delegate,
               GlobalMaterialLocalizations.delegate,
               GlobalWidgetsLocalizations.delegate,
               GlobalCupertinoLocalizations.delegate,
