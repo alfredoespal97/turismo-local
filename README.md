@@ -56,33 +56,33 @@ El proyecto implementa **Clean Architecture** para garantizar un desacoplamiento
 
 ```mermaid
 graph TD
-    subgraph Presentation [Capa de Presentación - Flutter]
-        UI[Screens & Custom Widgets]
-        Map[HereMapWidget - FlutterMap]
-        Prov[AppProvider / ChangeNotifier]
+    subgraph Presentation ["Capa de Presentación (Flutter)"]
+        UI["Screens & Custom Widgets"]
+        Map["HereMapWidget (FlutterMap)"]
+        Prov["AppProvider (ChangeNotifier)"]
     end
 
-    subgraph Domain [Capa de Dominio - Pure Dart]
-        Models[POI, OfflineRegion, HereCredentials]
-        RepoInterfaces[IPOIRepository, IOfflineRepository]
+    subgraph Domain ["Capa de Dominio (Pure Dart)"]
+        Models["POI, OfflineRegion, HereCredentials"]
+        RepoInterfaces["IPOIRepository, IOfflineRepository"]
     end
 
-    subgraph Data [Capa de Datos]
-        RepoImpl[POIRepositoryImpl, OfflineRepositoryImpl]
-        LocalDS[JSON Local Assets / Cache]
+    subgraph Data ["Capa de Datos"]
+        RepoImpl["POIRepositoryImpl, OfflineRepositoryImpl"]
+        LocalDS["JSON Local Assets / Cache"]
     end
 
-    subgraph Core [Núcleo & Infraestructura]
-        LocServ[LocationService - Haversine & GPS]
-        NavServ[NavigationService - Google/Apple Maps Launcher]
-        Theme[AppTheme - Tokens, Dark Palette & Glassmorphism]
+    subgraph Core ["Núcleo & Infraestructura"]
+        LocServ["LocationService (Haversine & GPS)"]
+        NavServ["NavigationService (Google / Apple Maps)"]
+        Theme["AppTheme (Tokens & Glassmorphism)"]
     end
 
     UI --> Prov
     Map --> LocServ
     Map --> NavServ
     Prov --> RepoInterfaces
-    RepoImpl ..|> RepoInterfaces
+    RepoImpl -.->|Implements| RepoInterfaces
     RepoImpl --> LocalDS
     Prov --> LocServ
 ```
