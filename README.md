@@ -186,4 +186,4 @@ No issues found!
 
 Este proyecto está bajo la Licencia **MIT**. Consulta el archivo [LICENSE](LICENSE) para más información.
 
-Desarrollado con ❤️ por **[Alfredo Espinosa](https://github.com/alfredoespal97)**.
+Desarrollado por **[Alfredo Espinosa](https://github.com/alfredoespal97)**.
