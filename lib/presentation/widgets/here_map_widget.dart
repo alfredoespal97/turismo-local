@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import '../../domain/models/poi_model.dart';
 import '../../core/theme/app_theme.dart';
@@ -22,6 +23,9 @@ class HereMapWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final maxHorizontalRange = max(1.0, screenWidth - 120.0);
+
     return Container(
       width: double.infinity,
       height: double.infinity,
@@ -40,7 +44,7 @@ class HereMapWidget extends StatelessWidget {
               width: 24,
               height: 24,
               decoration: BoxDecoration(
-                color: AppTheme.accentCyan.withOpacity(0.3),
+                color: AppTheme.accentCyan.withValues(alpha: 0.3),
                 shape: BoxShape.circle,
                 border: Border.all(color: AppTheme.accentCyan, width: 2),
               ),
@@ -64,8 +68,8 @@ class HereMapWidget extends StatelessWidget {
             final isSelected = selectedPoi?.id == poi.id;
 
             // Offset positioning for map visualization simulation
-            final double leftOffset = 80 + (idx * 65.0) % (MediaQuery.of(context).size.width - 120);
-            final double topOffset = 180 + ((idx * 85.0) % 280);
+            final double leftOffset = 40.0 + (idx * 65.0) % maxHorizontalRange;
+            final double topOffset = 180.0 + ((idx * 85.0) % 280.0);
 
             return Positioned(
               left: leftOffset,
@@ -84,7 +88,7 @@ class HereMapWidget extends StatelessWidget {
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: (isSelected ? AppTheme.primaryTeal : Colors.black).withOpacity(0.4),
+                        color: (isSelected ? AppTheme.primaryTeal : Colors.black).withValues(alpha: 0.4),
                         blurRadius: isSelected ? 12 : 6,
                         offset: const Offset(0, 4),
                       )
@@ -121,7 +125,7 @@ class HereMapWidget extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
               decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.65),
+                color: Colors.black.withValues(alpha: 0.65),
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(color: Colors.white24),
               ),
